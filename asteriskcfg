@@ -90,6 +90,20 @@ tar -zxvf asterisk-11-current.tar.gz
 
 cd asterisk****
 
+Using install_prereq
+
+The install_prereq script is included with every release of Asterisk in the contrib/scripts subdirectory. The script has the following options:
+
+    test - print only the libraries to be installed.
+    install - install package dependencies only. Depending on your distribution of Linux, version of Asterisk, and capabilities you wish to use, this may be sufficient.
+    install-unpacakged - install dependencies that don't have packages but only have tarballs. You may need these dependencies for certain capabilities in Asterisk.
+
+[root@server asterisk-11.X.Y]# cd contrib/scripts
+
+[root@server asterisk-11.X.Y/contrib/scripts]# ./install_prereq install
+
+[root@server asterisk-11.X.Y/contrib/scripts]# ./install_prereq install-unpackaged
+
 The ./configure command caches certain data to speed things up if it's invoked multiple times. To clear all the cached data, 
 you can use the following command to completely clear out any cached data from the Asterisk build system.
 
