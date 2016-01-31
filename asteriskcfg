@@ -75,7 +75,7 @@ ps ax | grep dhcpd
 NTP Server
 Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate pool.ntp.org>)
 
-sudo apt-get install sox(mix) libsox-fmt-all
+sudo apt-get install sox(mix) libsox-fmt-all [convert --> sox xxx.mp3 -t raw -r 8000 -s -2 -c 1 xxx.sln]
 
 ######ordem de instalação#########
 1º.DAHDI
