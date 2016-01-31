@@ -1,0 +1,199 @@
+ http://blogs.digium.com/2009/03/28/sip-security/
+
+sip soft: linphone	http://www.linphone.org/downloads-for-desktop.html
+
+Configurar o IP do servidor /etc/network/interfaces
+
+auto eth0
+iface eth0 inet static
+	address x.x.x.x
+	network x.x.x.x
+	gateway x.x.x.x
+
+sudo service networking restart
+
+Configurar DNS /etc/resolv.conf
+
+nameserver x.x.x.x
+
+
+Configurar DNS no servidor 
+DHCP server
+
+#Configurar o serviço dhcp -> https://wiki.debian.org/DHCP_Server
+
+apt-get install dhcpd
+
+sudo nano /etc/default/udhcpd
+
+"DHCPD_ENABLED="yes"
+
+sudo nano /etc/udhcpd.conf
+
+range, dns, gtw...
+
+sudo /etc/init.d/udhcpd start
+
+sudo tail -f /var/log/syslog
+
+NTP Server
+Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate pool.ntp.org>)
+
+www.asterix.org -> obter sw ver. 11 LTS (não certificada) 11.18 ....19
+
+wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-11-current.tar.gz
+
+sudo apt-get install build-essential wget libssl-dev libcurses5-dev libxml2-dev linux-headers-$(uname -r) libsqlite3-dev uuid-dev
+
+tar -zxvf asterisk-11-current.tar.gz
+
+cd asterisk****
+
+./configure
+
+make menuconfig (opt)
+
+make
+
+sudo make install
+
+cd /etc/asterisk (vazia...)
+
+cd ~/asterisk***
+
+make samples
+
+cd /etc/asterisk (~185 ficheiros de conf)
+
+asterisk -cvvv (asterisk -r to connect if already running)
+
+run on start
+
+cd ~/asterisk***/contrib/init.d
+
+cp ~/asterisk***/contrib/init.d/rc.debian.asterisk /etc/init.d/asterisk
+
+(teste) /etc/init.d/asterisk start	...not found
+
+#não correr como root
+#arrancar no boot
+
+type asterisk (/usr/sbin/asterisk) ou no debian sudo which asterisk
+
+sudo nano /etc/init.d/asterisk
+
+"DAEMON=/usr/sbin/asterisk"
+"ASTVARRUNDIR=/var/run/asterisk"
+"ASTETCDIR=/etc/asterisk"
+
+sudo useradd -d /var/lib/asterisk asterisk (confirmar cat /etc/passwd)
+
+chown -R asterisk /var/spool/asterisk /var/lib/asterisk /var/run/asterisk
+
+cp ~/asterisk***/contrib/init.d/etc_default_asterisk /etc/default/asterisk
+
+sudo nano /etc/default/asterisk
+
+uncomment
+AST_USER="asterisk"
+AST_GROUP="asterisk"
+
+sudo /etc/init.d/asterisk start
+
+verificar se corre -> ps aux | grep asterisk (asterisk  1330  4.5  1.1  49392 23504 ?        Ssl  09:57   0:00 /usr/sbin/asterisk -U asterisk -G asterisk) 	
+
+sudo nano /etc/asterisk/asterisk.conf
+
+uncoment "live_dangerously = no"
+
+sudo update-rc.d asterisk defaults
+
+sudo touch /var/log/asterisk//cdr-csv//Master.csv
+
+sudo chown asterisk /var/log/asterisk//cdr-csv//Master.csv
+
+_____________________________________________________________________________________________________________________________________________________________
+
+ligar telefone na rede -> sudo tail -f /var/log/syslog
+
+sudo nano /etc/asterisk/sip.conf
+
+sudo cp /etc/asterisk/sip.conf /etc/asterisk/sip.conf.orig
+
+sudo vi sip.conf -> :g/^\s*;/d	#apaga linha if
+
+:g/^$/d		#apaga linha vazia
+
+[general]
+"qualify=yes"	#monitor se terminal serve as necessidades, se lento retira!!! o qualify é conf
+
+configurar sip ->
+
+[pedro]
+	type=friend
+	context=phones
+	allow=ulaw,alaw
+	secret=123456
+	host=dynamic	
+[claudio]
+	type=friend
+	context=phones
+	allow=ulaw,alaw
+	secret=123456
+	host=dynamic
+[joao]
+	type=friend
+	context=phones
+	allow=ulaw,alaw
+	secret=123456
+	host=dynamic
+
+sudo asterisk -rvvv
+
+>sip reload
+>sip show peers
+
+#no telefone
+#user: pedro
+#domain: 10.192.129.241
+#pass: 123456
+
+__________________________________________________________________________________________
+
+#dialplan
+
+sudo cp /etc/asterisk/extentions.conf /etc/asterisk/extentions.conf.orig
+
+sudo echo "" > extentions.conf	#ou usar su
+
+sudo nano extentions.conf
+
+[phones]
+exten => 100,1,NoOp(firstline ext 100 não faz nada e faz primeiro)
+exten => 100,2,NoOp
+exten => 100,3,Hangup
+
+
+>dialplan reload
+
+#NoOp é uma aplicação
+#>core show application
+#>core show application dial
+
+sudo nano extentions.conf
+
+exten => 100,1,NoOp(first line)
+same => n,NoOp
+same => n,Hangup
+
+exten => 101,n,NoOp
+same => n,Dial(SIP/pedro)
+same => n,Hangup
+
+exten => 102,n,NoOp
+same => n,Dial(SIP/joao)
+same => n,Hangup
+
+exten => 103,n,NoOp
+same => n,Dial(SIP/claudio)
+same => n,Hangup
