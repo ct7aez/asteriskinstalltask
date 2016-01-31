@@ -2,6 +2,13 @@
 
 sip soft: linphone	http://www.linphone.org/downloads-for-desktop.html
 
+Asterisk will use the system locale for the core language and timezone. 
+In some countries the use of US_EN for a locale is common because of keyboards and IPMI devices. 
+If you wish to set the core language of Asterisk make note while setting up the operating system.
+
+https://wiki.asterisk.org/wiki/display/AST/Installing+Asterisk+From+Source
+
+
 Configurar o IP do servidor /etc/network/interfaces
 
 auto eth0
