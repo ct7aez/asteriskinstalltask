@@ -15,9 +15,8 @@ sudo service networking restart
 Configurar DNS /etc/resolv.conf
 
 nameserver x.x.x.x
+Configurar DNS no servidor
 
-
-Configurar DNS no servidor 
 DHCP server
 
 #Configurar o serviço dhcp -> https://wiki.debian.org/DHCP_Server
@@ -36,10 +35,40 @@ sudo /etc/init.d/udhcpd start
 
 sudo tail -f /var/log/syslog
 
+############em alternativa instalar isc-dhcp##############
+
+edit /etc/dhcp/dhcpd.conf
+
+ddns-update-style none;
+
+# option definitions common to all supported networks...
+option domain-name "MSHOME";
+option domain-name-servers 8.8.8.8, 62.141.58.13, 89.233.43.71, 8.8.4.4, 192.168.1.1, 192.168.1.4;
+
+default-lease-time 172800;
+max-lease-time 518400;
+# This is a very basic subnet declaration.
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.20 192.168.1.200;
+  option routers 192.168.1.1;
+}
+
+sudo update-rc.d -f isc-dhcp-server enable | disable	#para iniciar/não iniciar no arranque
+sudo service isc-dhcp-server stop
+sudo service isc-dhcp-server start
+sudo ifdown eth0
+sudo ifup eth0
+
+sudo tail /var/log/syslog
+
+ps ax | grep dhcpd
+
+/etc/dhcp/dhcpd.conf
+
 NTP Server
 Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate pool.ntp.org>)
 
-www.asterix.org -> obter sw ver. 11 LTS (não certificada) 11.18 ....19
+www.asterix.org -> obter sw ver. 11 LTS (certificada ou não) 11.18 ....19 12....
 
 wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-11-current.tar.gz
 
@@ -51,7 +80,7 @@ cd asterisk****
 
 ./configure
 
-make menuconfig (opt)
+make menuselect "config" (opt)
 
 make
 
@@ -65,7 +94,7 @@ make samples
 
 cd /etc/asterisk (~185 ficheiros de conf)
 
-asterisk -cvvv (asterisk -r to connect if already running)
+asterisk -Tcvvvvvv (asterisk -r to connect if already running)
 
 run on start
 
