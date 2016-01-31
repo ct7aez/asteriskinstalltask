@@ -68,6 +68,11 @@ ps ax | grep dhcpd
 NTP Server
 Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate pool.ntp.org>)
 
+######ordem de instalação#########
+1º.DAHDI
+2º.LinPRI
+3º.Asterisk
+
 www.asterix.org -> obter sw ver. 11 LTS (certificada ou não) 11.18 ....19 12....
 
 wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-11-current.tar.gz
