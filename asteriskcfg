@@ -77,6 +77,31 @@ Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate poo
 
 sudo apt-get install sox(mix) libsox-fmt-all [convert --> sox xxx.mp3 -t raw -r 8000 -s -2 -c 1 xxx.sln]
 
+/etc/upate-motd.d750-landscape-sysinfo
+
+#!/bin/sh
+cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null)
+[ "$cores" -eq "0" ] && cores=1
+threshold="${cores:-1}.0"
+if [ $(echo "`cut -f1 -d ' ' /proc/loadavg` < $threshold" | bc) -eq 1 ]; then
+echo
+echo -n " System information as of "
+/bin/date
+echo
+/usr/bin/landscape-sysinfo
+echo
+astversion=$(asterisk -rx "core show version")
+echo " Running $astversion"
+echo
+asterisk -rx "core show uptime"
+asterisk -rx "core show calls"
+# asterisk -rx "sip show peers" | grep UNKNOW
+else
+echo
+echo " System information disabled due to load higher than $threshold"
+fi
+
+
 ######ordem de instalação#########
 1º.DAHDI
 2º.LinPRI
