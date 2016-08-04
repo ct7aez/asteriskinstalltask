@@ -107,6 +107,13 @@ fi
 2º.LinPRI
 3º.Asterisk
 
+apt-get, aptitude, etc. will not obey the environment variables when used normally with sudo.
+So separately configure them; create a file called 95proxies in /etc/apt/apt.conf.d/, and include the following:
+
+Acquire::http::proxy "http://myproxy.server.com:8080/";
+Acquire::ftp::proxy "ftp://myproxy.server.com:8080/";
+Acquire::https::proxy "https://myproxy.server.com:8080/";
+
 www.asterix.org -> obter sw ver. 11 LTS (certificada ou não) 11.18 ....19 12....
 
 wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-11-current.tar.gz
