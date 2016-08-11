@@ -1,13 +1,13 @@
  http://blogs.digium.com/2009/03/28/sip-security/
 
 sip soft: linphone	http://www.linphone.org/downloads-for-desktop.html
+iax soft: zoiper        http://www.zoiper.com/en/voip-softphone/download/zoiper3
 
 Asterisk will use the system locale for the core language and timezone. 
 In some countries the use of US_EN for a locale is common because of keyboards and IPMI devices. 
 If you wish to set the core language of Asterisk make note while setting up the operating system.
 
 https://wiki.asterisk.org/wiki/display/AST/Installing+Asterisk+From+Source
-
 
 Configurar o IP do servidor /etc/network/interfaces
 
@@ -72,10 +72,40 @@ ps ax | grep dhcpd
 
 /etc/dhcp/dhcpd.conf
 
-NTP Server
+############em alternativa instalar dnsmasq##############
+
+sudo apt-get install dnsmasq
+
+editar /etc/dnsmasq.d/dns.conf
+
+interface=eth0
+no-poll
+bogus-priv
+neg-ttl=3600
+cache-size=10000
+dns-forward-max=1000
+domain-needed
+strict-order
+resolv-file=/etc/resolv.personal
+log-queries # we will use it for debug purpose, it should be turned off later ...
+
+editar /etc/resol.personal
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4 #etc....
+
+editar /etc/resolv.conf
+
+nameserver 127.0.0.1
+
+############NTP Server#######################
+
 Sincronizar com um ntp server (usar ntpq ou instalar ntp e executar <ntpdate pool.ntp.org>)
 
 sudo apt-get install sox(mix) libsox-fmt-all [convert --> sox xxx.mp3 -t raw -r 8000 -s -2 -c 1 xxx.sln]
+
+
+###########configurar motd (ubuntu)##########
 
 /etc/upate-motd.d750-landscape-sysinfo
 
@@ -101,11 +131,7 @@ echo
 echo " System information disabled due to load higher than $threshold"
 fi
 
-
-######ordem de instalação#########
-1º.DAHDI
-2º.LinPRI
-3º.Asterisk
+###########Conf proxy in apt###########################
 
 apt-get, aptitude, etc. will not obey the environment variables when used normally with sudo.
 So separately configure them; create a file called 95proxies in /etc/apt/apt.conf.d/, and include the following:
@@ -113,6 +139,12 @@ So separately configure them; create a file called 95proxies in /etc/apt/apt.con
 Acquire::http::proxy "http://myproxy.server.com:8080/";
 Acquire::ftp::proxy "ftp://myproxy.server.com:8080/";
 Acquire::https::proxy "https://myproxy.server.com:8080/";
+
+######ordem de instalação#########
+1º.DAHDI
+2º.LinPRI
+3º.Asterisk
+
 
 www.asterix.org -> obter sw ver. 11 LTS (certificada ou não) 11.18 ....19 12....
 
