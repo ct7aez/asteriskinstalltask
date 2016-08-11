@@ -8,8 +8,11 @@ In some countries the use of US_EN for a locale is common because of keyboards a
 If you wish to set the core language of Asterisk make note while setting up the operating system.
 
 https://wiki.asterisk.org/wiki/display/AST/Installing+Asterisk+From+Source
+http://downloads.asterisk.org/pub/telephony/asterisk/
+https://wiki.asterisk.org/wiki/display/AST/Checking+Asterisk+Requirements
 
-Configurar o IP do servidor /etc/network/interfaces
+###########Configurar o IP do servidor####################
+editar /etc/network/interfaces
 
 auto eth0
 iface eth0 inet static
@@ -24,7 +27,7 @@ Configurar DNS /etc/resolv.conf
 nameserver x.x.x.x
 Configurar DNS no servidor
 
-DHCP server
+###########DHCP server####################################
 
 #Configurar o serviço dhcp -> https://wiki.debian.org/DHCP_Server
 
@@ -88,6 +91,11 @@ domain-needed
 strict-order
 resolv-file=/etc/resolv.personal
 log-queries # we will use it for debug purpose, it should be turned off later ...
+dhcp-range=xxx.xxx.xxx.xxx,xxx.xxx.xxx.xxx,72h
+dhcp-option=3,xxx.xxx.xxx.xxx   #gw
+dhcp-option=6,xxx.xxx.xxx.xxx   #dns, in this schema shoulp point to this server
+dhcp-option=1,255.255.255.0     #mask
+...
 
 editar /etc/resol.personal
 
@@ -144,6 +152,9 @@ Acquire::https::proxy "https://myproxy.server.com:8080/";
 1º.DAHDI
 2º.LinPRI
 3º.Asterisk
+
+install python (make targets) https://wiki.asterisk.org/wiki/display/AST/Building+and+Installing+Asterisk
+https://wiki.asterisk.org/wiki/display/AST/Installing+Initialization+Scripts (logrotate)
 
 
 www.asterix.org -> obter sw ver. 11 LTS (certificada ou não) 11.18 ....19 12....
@@ -249,6 +260,16 @@ to save disk space and to make searching them or cataloguing them easier. To do 
 
 [root@server asterisk-11.X.Y]# make install-logrotate
 
+logger.conf
+[logfiles]
+debug_log_123456 => notice,warning,error,debug,verbose,dtmf
+
+*CLI> core set verbose 5
+*CLI> core set debug 5
+*CLI> module reload logger
+
+Optionally, if you've used this file to record data previously, then rotate the logs:
+*CLI> logger rotate
 _____________________________________________________________________________________________________________________________________________________________
 
 ligar telefone na rede -> sudo tail -f /var/log/syslog
@@ -265,6 +286,18 @@ sudo vi sip.conf -> :g/^\s*;/d	#apaga linha if
 "qualify=yes"	#monitor se terminal serve as necessidades, se lento retira!!! o qualify é conf
 
 configurar sip ->
+
+[CATHY]
+type=endpoint
+context=from-internal
+allow=!all,ulaw
+auth=CATHY
+aors=CATHY
+
+We set the option "allow" to a string of values "!all,ulaw".
+
+    The value "!all" means "Disallow all" and is identical to "disallow=all". This tells Asterisk to disallow all codecs except what we further define in the allow option.
+    The value "ulaw" instructs Asterisk to allow ulaw audio during media negotiation for this endpoint.
 
 [pedro]
 	type=friend
@@ -334,3 +367,6 @@ same => n,Hangup
 exten => 103,n,NoOp
 same => n,Dial(SIP/claudio)
 same => n,Hangup
+
+
+https://wiki.asterisk.org/wiki/display/AST/Directory+and+File+Structure
