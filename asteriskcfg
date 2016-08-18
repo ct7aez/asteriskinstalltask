@@ -33,11 +33,13 @@ Configurar DNS no servidor
 
 apt-get install dhcpd
 
-sudo nano /etc/default/udhcpd
+TIP para guardar um ficheiro sem ser root -> :w !sudo tee % > /dev/null e seleccionat a opção L
+
+sudo vim /etc/default/udhcpd
 
 "DHCPD_ENABLED="yes"
 
-sudo nano /etc/udhcpd.conf
+sudo vim /etc/udhcpd.conf
 
 range, dns, gtw...
 
@@ -217,7 +219,7 @@ cp ~/asterisk***/contrib/init.d/rc.debian.asterisk /etc/init.d/asterisk
 
 type asterisk (/usr/sbin/asterisk) ou no debian sudo which asterisk
 
-sudo nano /etc/init.d/asterisk
+sudo vim /etc/init.d/asterisk
 
 "DAEMON=/usr/sbin/asterisk"
 "ASTVARRUNDIR=/var/run/asterisk"
@@ -229,7 +231,7 @@ chown -R asterisk /var/spool/asterisk /var/lib/asterisk /var/run/asterisk
 
 cp ~/asterisk***/contrib/init.d/etc_default_asterisk /etc/default/asterisk
 
-sudo nano /etc/default/asterisk
+sudo vim /etc/default/asterisk
 
 uncomment
 AST_USER="asterisk"
@@ -239,7 +241,7 @@ sudo /etc/init.d/asterisk start
 
 verificar se corre -> ps aux | grep asterisk (asterisk  1330  4.5  1.1  49392 23504 ?        Ssl  09:57   0:00 /usr/sbin/asterisk -U asterisk -G asterisk) 	
 
-sudo nano /etc/asterisk/asterisk.conf
+sudo vim /etc/asterisk/asterisk.conf
 
 uncoment "live_dangerously = no"
 
@@ -274,11 +276,11 @@ ________________________________________________________________________________
 
 ligar telefone na rede -> sudo tail -f /var/log/syslog
 
-sudo nano /etc/asterisk/sip.conf
+sudo vim /etc/asterisk/sip.conf
 
 sudo cp /etc/asterisk/sip.conf /etc/asterisk/sip.conf.orig
 
-sudo vi sip.conf -> :g/^\s*;/d	#apaga linha if
+sudo vi sip.conf -> :g/^\s*;/d	#apaga linha se começar por ;
 
 :g/^$/d		#apaga linha vazia
 
@@ -336,7 +338,7 @@ sudo cp /etc/asterisk/extentions.conf /etc/asterisk/extentions.conf.orig
 
 sudo echo "" > extentions.conf	#ou usar su
 
-sudo nano extentions.conf
+sudo vim extentions.conf
 
 [phones]
 exten => 100,1,NoOp(firstline ext 100 não faz nada e faz primeiro)
@@ -350,7 +352,7 @@ exten => 100,3,Hangup
 #>core show application
 #>core show application dial
 
-sudo nano extentions.conf
+sudo vim extentions.conf
 
 exten => 100,1,NoOp(first line)
 same => n,NoOp
